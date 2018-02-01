@@ -3,16 +3,14 @@
 //
 
 #include "faceRecognition.h"
-faceRecognition::faceRecognition(const std::string a,const std::string b)
+faceRecognition::faceRecognition(const std::string a, const std::string b)
 {
-    dlib::load_image(train_img,a);
-    dlib::load_image(test_img,b);
+    dlib::load_image(train_img, a);
+    dlib::load_image(test_img, b);
 }
 
-int faceRecognition::facerecd(double th)
-try
+int faceRecognition::facerecd(double th) try
 {
-
 
     // The first thing we are going to do is load all our models.  First, since we need to
     // find faces in the image we will need a face detector:
@@ -23,8 +21,8 @@ try
     anet_type net;
     deserialize("../dat/dlib_face_recognition_resnet_model_v1.dat") >> net;
 
-    matrix<rgb_pixel> img=train_img;
-    matrix<rgb_pixel> img2=test_img;
+    matrix<rgb_pixel> img = train_img;
+    matrix<rgb_pixel> img2 = test_img;
     //load_image(img, "../dat/5.jpg");
     //load_image(img2, "../dat/3.jpg");
     // Display the raw image on the screen
@@ -35,28 +33,27 @@ try
     // and centered.
     std::vector<matrix<rgb_pixel>> faces1;
 
-    for (auto face : detector(img,0))
+    for (auto face : detector(img, 0))
     {
         auto shape = sp(img, face);
         matrix<rgb_pixel> face_chip;
-        extract_image_chip(img, get_face_chip_details(shape,150,0.25), face_chip);
+        extract_image_chip(img, get_face_chip_details(shape, 150, 0.25), face_chip);
         faces1.push_back(move(face_chip));
         // Also put some boxes on the faces so we can see that the detector is finding
         // them.
         win.add_overlay(face);
     }
     std::vector<matrix<rgb_pixel>> faces2;
-    for (auto face : detector(img2,0))
+    for (auto face : detector(img2, 0))
     {
         auto shape = sp(img2, face);
         matrix<rgb_pixel> face_chip;
-        extract_image_chip(img2, get_face_chip_details(shape,150,0.25), face_chip);
+        extract_image_chip(img2, get_face_chip_details(shape, 150, 0.25), face_chip);
         faces2.push_back(move(face_chip));
         // Also put some boxes on the faces so we can see that the detector is finding
         // them.
         win2.add_overlay(face);
     }
-
 
     if (faces1.size() == 0)
     {
@@ -64,7 +61,7 @@ try
         return 1;
     }
     else
-        cout << "The number of faces found in the first image: "<< faces1.size() << endl;
+        cout << "The number of faces found in the first image: " << faces1.size() << endl;
 
     if (faces2.size() == 0)
     {
@@ -72,19 +69,21 @@ try
         return 2;
     }
     else
-        cout << "The number of faces found in the second image: "<< faces2.size() << endl;
+        cout << "The number of faces found in the second image: " << faces2.size() << endl;
     // This call asks the DNN to convert each face image in faces into a 128D vector.
     // In this 128D vector space, images from the same person will be close to each other
     // but vectors from different people will be far apart.  So we can use these vectors to
     // identify if a pair of images are from the same person or from different people.
-    std::vector<matrix<float,0,1>> face_descriptors1 = net(faces1);
-    std::vector<matrix<float,0,1>> face_descriptors2 = net(faces2);
-    int flag=0;
+    std::vector<matrix<float, 0, 1>> face_descriptors1 = net(faces1);
+    std::vector<matrix<float, 0, 1>> face_descriptors2 = net(faces2);
+    int flag = 0;
     for (size_t i = 0; i < face_descriptors1.size(); ++i)
     {
-        for (size_t j = 0; j < face_descriptors2.size(); ++j) {
-            cout<< "The distance of two faces: "<<length(face_descriptors1[i]-face_descriptors2[j])<<endl;
-            if (length(face_descriptors1[i]-face_descriptors2[j]) < th) {
+        for (size_t j = 0; j < face_descriptors2.size(); ++j)
+        {
+            cout << "The distance of two faces: " << length(face_descriptors1[i] - face_descriptors2[j]) << endl;
+            if (length(face_descriptors1[i] - face_descriptors2[j]) < th)
+            {
                 flag = 1;
                 cout << "The two pictures have the same face" << endl;
                 return 4;
@@ -128,9 +127,6 @@ try
         win_clusters[cluster_id].set_image(tile_images(temp));
     }*/
 
-
-
-
     // Finally, let's print one of the face descriptors to the screen.
     //cout << "face descriptor for one face in first image: " << trans(face_descriptors1[0]) << endl;
     //cout << "face descriptor for one face in second image: " << trans(face_descriptors2[0]) << endl;
@@ -145,68 +141,65 @@ try
     cout << "The two pictures don't have the same face" << endl;
     return 0;
 }
-catch (std::exception& e)
+catch (std::exception &e)
 {
     cout << e.what() << endl;
 }
 
-int faceRecognition::facerec(double th) try{
-
-frontal_face_detector detector = get_frontal_face_detector();
-shape_predictor sp;
-deserialize("../dat/shape_predictor_68_face_landmarks.dat") >> sp;
-anet_type net;
-deserialize("../dat/dlib_face_recognition_resnet_model_v1.dat") >> net;
-matrix<rgb_pixel> img=train_img;
-matrix<rgb_pixel> img2=test_img;
-std::vector<matrix<rgb_pixel>> faces1;
-for (auto face : detector(img,0))
+int faceRecognition::facerec(double th) try
 {
-    auto shape = sp(img, face);
-    matrix<rgb_pixel> face_chip;
-    extract_image_chip(img, get_face_chip_details(shape,150,0.25), face_chip);
-    faces1.push_back(move(face_chip));
 
-}
-std::vector<matrix<rgb_pixel>> faces2;
-for (auto face : detector(img2,0))
-{
-    auto shape = sp(img2, face);
-    matrix<rgb_pixel> face_chip;
-    extract_image_chip(img2, get_face_chip_details(shape,150,0.25), face_chip);
-    faces2.push_back(move(face_chip));
-}
+    frontal_face_detector detector = get_frontal_face_detector();
+    shape_predictor sp;
+    deserialize("../dat/shape_predictor_68_face_landmarks.dat") >> sp;
+    anet_type net;
+    deserialize("../dat/dlib_face_recognition_resnet_model_v1.dat") >> net;
+    matrix<rgb_pixel> img = train_img;
+    matrix<rgb_pixel> img2 = test_img;
+    std::vector<matrix<rgb_pixel>> faces1;
+    for (auto face : detector(img, 0))
+    {
+        auto shape = sp(img, face);
+        matrix<rgb_pixel> face_chip;
+        extract_image_chip(img, get_face_chip_details(shape, 150, 0.25), face_chip);
+        faces1.push_back(move(face_chip));
+    }
+    std::vector<matrix<rgb_pixel>> faces2;
+    for (auto face : detector(img2, 0))
+    {
+        auto shape = sp(img2, face);
+        matrix<rgb_pixel> face_chip;
+        extract_image_chip(img2, get_face_chip_details(shape, 150, 0.25), face_chip);
+        faces2.push_back(move(face_chip));
+    }
 
+    if (faces1.size() == 0)
+    {
+        return 1;
+    }
 
-if (faces1.size() == 0)
-{
-    cout << "No faces found in the first image!" << endl;
-    return 1;
-}
+    if (faces2.size() == 0)
+    {
+        return 2;
+    }
 
-
-if (faces2.size() == 0)
-{
-    cout << "No faces found in the second image!" << endl;
-    return 2;
-}
-
-std::vector<matrix<float,0,1>> face_descriptors1 = net(faces1);
-std::vector<matrix<float,0,1>> face_descriptors2 = net(faces2);
-for (size_t i = 0; i < face_descriptors1.size(); ++i)
-{
-    for (size_t j = 0; j < face_descriptors2.size(); ++j) {
-        cout<< "The distance of two faces: "<<length(face_descriptors1[i]-face_descriptors2[j])<<endl;
-        if (length(face_descriptors1[i]-face_descriptors2[j]) < th) {
-            cout << "The two pictures have the same face" << endl;
-            return 4;
+    std::vector<matrix<float, 0, 1>> face_descriptors1 = net(faces1);
+    std::vector<matrix<float, 0, 1>> face_descriptors2 = net(faces2);
+    for (size_t i = 0; i < face_descriptors1.size(); ++i)
+    {
+        for (size_t j = 0; j < face_descriptors2.size(); ++j)
+        {
+            cout << "The distance of two faces: " << length(face_descriptors1[i] - face_descriptors2[j]) << endl;
+            if (length(face_descriptors1[i] - face_descriptors2[j]) < th)
+            {
+                return 4;
+            }
         }
     }
-}
-    cout << "The two pictures don't have the same face" << endl;
+    
     return 0;
 }
-catch (std::exception& e)
+catch (std::exception &e)
 {
-cout << e.what() << endl;
+    cout << e.what() << endl;
 }
