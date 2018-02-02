@@ -1,21 +1,36 @@
-#include <stdio.h>
 #include "faceRecognition.h"
 
+/***
+ * para has for parameter:
+ * imagepath1,imagepath2 are the input image paths
+ * threshold is the
+ * desample is resizing image for accelerating
+ *
+ *
+ * facerec() to recognize the if two images have the same person
+ * faceidentify() is to recognize the if the same person is in one image
+ */
+
 int main(int argc, char** argv)  {
-    if (argc <= 2) {
-        fprintf(stderr, "%s train_img test_img\n", argv[0]);
-        return -1;
-    }
 
-    faceRecognition face(argv[1], argv[2]);
-    int res = face.facerec(0.6);
-    switch (res) {
-        case 1: cout << "No faces found in the first image!" << endl; break;
-        case 2: cout << "No faces found in the second image!" << endl; break;
-        case 4: cout << "The two pictures have the same face" << endl; break;
-        case 0: cout << "The two pictures don't have the same face" << endl; break;
-        default:cout << "Internal error" << endl; break;
-    }
+    clock_t time_begin=clock();
+    faceRecognition face;
+    clock_t time_point1=clock();
 
+    paramFR para;
+    para.imagepath1="../dat/1.jpg";
+    para.imagepath2="../dat/2.jpg";
+    para.desample=0.5; // default is 1
+
+
+    int res=face.facerec(para);
+    clock_t time_end=clock();
+    cout<<"******************************************"<<endl;
+    int res2=face.faceidentify(para);  //only imagepath1 is valid
+    cout<<"******************************************"<<endl;
+    cout<<"The loading model time: "<<(1.0)*(time_point1-time_begin)/CLOCKS_PER_SEC<<endl;
+    cout<<"The recognition time: "<<(1.0)*(time_end-time_point1)/CLOCKS_PER_SEC<<endl;
+    cout<<"The runing time: "<<(1.0)*(time_end-time_begin)/CLOCKS_PER_SEC<<endl;
     return 0;
 }
+

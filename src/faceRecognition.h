@@ -56,16 +56,25 @@ using anet_type = loss_metric<fc_no_bias<128,avg_pool_everything<
                                                         input_rgb_image_sized<150>
                                                 >>>>>>>>>>>>;
 
+struct paramFR{
+    double threshold=0.6;
+    double desample=1;
+    string imagepath1="";
+    string imagepath2="";
+};
+
 class faceRecognition {
 public:
-    faceRecognition(const std::string a,const std::string b);
+    faceRecognition();
 
 private:
-    matrix<rgb_pixel> train_img;
-    matrix<rgb_pixel> test_img;
+
+    frontal_face_detector detector;
+    shape_predictor sp;
+    anet_type net;
 public:
-    int facerec(double th);
-    int facerecd(double th);
+    int facerec(const paramFR& para);
+    int faceidentify(const paramFR& para);
 };
 
 
