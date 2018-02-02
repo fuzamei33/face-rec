@@ -24,11 +24,10 @@ try
 
     dlib::load_image(img,para.imagepath1);
     dlib::load_image(img2,para.imagepath2);
-
-    resize_image(para.desample,img);
-    resize_image(para.desample,img2);
-
-
+    double a1=min(img.nc(),img.nr());
+    double a2=min(img2.nc(),img2.nr());
+    resize_image(PROPERSIZE/a1*para.desample,img);
+    resize_image(PROPERSIZE/a2*para.desample,img2);
 
     std::vector<matrix<rgb_pixel>> faces1;
     double s1=clock();
@@ -92,7 +91,9 @@ catch (std::exception& e)
 int faceRecognition::faceidentify(const paramFR &para) {
     matrix<rgb_pixel> img;
     dlib::load_image(img,para.imagepath1);
-    resize_image(para.desample,img);
+    double a1=min(img.nc(),img.nr());
+    resize_image(PROPERSIZE/a1*para.desample,img);
+
     std::vector<matrix<rgb_pixel>> faces1;
     double s1=clock();
     pyramid_up(img);

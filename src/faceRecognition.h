@@ -63,6 +63,9 @@ struct paramFR{
     string imagepath2="";
 };
 
+#define PROPERSIZE 250
+
+
 class faceRecognition {
 public:
     faceRecognition();
