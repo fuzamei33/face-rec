@@ -20,7 +20,7 @@ int main(int argc, char** argv)  {
     paramFR para;
     para.imagepath1="../dat/1.jpg";
     para.imagepath2="../dat/2.jpg";
-    para.desample=0.5; // default is 1
+    para.desample=1; // default is 1
 
 
     int res=face.facerec(para);
