@@ -12,25 +12,25 @@
  */
 
 int main(int argc, char** argv)  {
-
-    clock_t time_begin=clock();
+    clock_t time_begin = clock();
     faceRecognition face;
-    clock_t time_point1=clock();
+    clock_t time_point1 = clock();
 
     paramFR para;
     para.imagepath1="../dat/1.jpg";
     para.imagepath2="../dat/2.jpg";
     para.desample=1; // default is 1
 
+    face.facerec(para);
+    clock_t time_point2 = clock();
 
-    int res=face.facerec(para);
-    clock_t time_end=clock();
-    cout<<"******************************************"<<endl;
-    int res2=face.faceidentify(para);  //only imagepath1 is valid
-    cout<<"******************************************"<<endl;
-    cout<<"The loading model time: "<<(1.0)*(time_point1-time_begin)/CLOCKS_PER_SEC<<endl;
-    cout<<"The recognition time: "<<(1.0)*(time_end-time_point1)/CLOCKS_PER_SEC<<endl;
-    cout<<"The runing time: "<<(1.0)*(time_end-time_begin)/CLOCKS_PER_SEC<<endl;
+    face.faceidentify(para); //only imagepath1 is valid
+    clock_t time_end = clock();
+
+    cout << "The loading model time: " << (1.0) * (time_point1 - time_begin) / CLOCKS_PER_SEC << endl;
+    cout << "The recognition time: " << (1.0) * (time_point2 - time_point1) / CLOCKS_PER_SEC << endl;
+    cout << "The identity time: " << (1.0) * (time_end - time_point2) / CLOCKS_PER_SEC << endl;
+    cout << "total time: " << (1.0) * (time_end - time_begin) / CLOCKS_PER_SEC << endl;
     return 0;
 }
 
